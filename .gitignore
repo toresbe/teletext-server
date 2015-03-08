@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+ttx_server
+
+# Vim temporary files
+*.swp
