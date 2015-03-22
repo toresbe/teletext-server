@@ -44,7 +44,7 @@ uint8_t &ttxLine::operator[](unsigned int i) {
 void ttxPageAddress::parse_address(const std::string & addr_str) {
 	// todo: this might be done more cleanly with boost qi?
 
-	if (sscanf(addr_str.c_str(), "%1u%2u", &magazine, &page_number) != 2) {
+	if (sscanf(addr_str.c_str(), "%1u%2x", &magazine, &page_number) != 2) {
 		throw std::invalid_argument("'" + addr_str + "' is not a valid page address");
 	}
 }
