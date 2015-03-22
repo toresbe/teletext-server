@@ -24,7 +24,7 @@
 
 
 namespace editserver {
-	#define DEFAULT_BUFLEN 512
+	#define DEFAULT_BUFLEN 8192
 	SOCKET make_socket(int portnum);
 
 	class DumpProtocol {

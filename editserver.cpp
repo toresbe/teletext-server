@@ -47,23 +47,24 @@ namespace editserver {
 		std::string line;
 		line.assign(buf);
 		// Is there any data left in the buffer?
-		if (newline == buf_p) {
+		if (newline <= buf_p) {
 			// Move the leftovers to the start of the buffer
-			memmove(buf, newline, newline - buf);
+			memmove(buf, newline + 1, sizeof(buf) - line.size());
 			// Move the water mark backwards, too
-			buf_p -= (newline - buf);
+			buf_p -= line.size() + 1;
 		}
 		else {
 			// No, we've eaten the whole buffer.
 			buf_p = buf;
 		}
 		// Clear remaining buffer
-		memset(buf_p, 0, (buf + DEFAULT_BUFLEN) - buf_p);
+		memset(buf_p, 0, line.size() + 1);
 		return line;
 	}
 
 	std::string EditConnection::get_line() {
 		char * newline;
+		
 		while (!(newline = newline_in_buffer()))
 			get_data();
 
@@ -71,19 +72,19 @@ namespace editserver {
 	}
 
 	int EditConnection::get_data() {
-		int received = recv(ConnectionSocket, buf_p, (&buf[0] + DEFAULT_BUFLEN) - buf_p, (int)0);
+		int maxlen = DEFAULT_BUFLEN - (buf_p - buf);
+		if (!maxlen) return 0;
+		int received = recv(ConnectionSocket, buf_p, maxlen, (int)0);
 
 		if (received > 0) {
 			buf_p += received;
-			if (buf_p == (buf + DEFAULT_BUFLEN)) {
-				throw std::overflow_error("Buffer overflow receiving data!");
-			}
 		}
 		else if (received == 0) {
 			throw std::underflow_error("Connection reset by peer");
 		}
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
+			throw std::underflow_error("Connection failed");
 			closesocket(ConnectionSocket);
 		}
 
