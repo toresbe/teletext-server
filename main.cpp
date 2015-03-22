@@ -1,3 +1,38 @@
+#include "config.hpp"
+#include "editserver.hpp"
+#include "ttxdata.hpp"
+#include "encoder.hpp"
+#include "persist.hpp"
+#include <list>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+ttxCarousel carousel;
+
+
+int main() {
+	BOOST_LOG_TRIVIAL(info) << "Starting teletext server";
+	config::read_file("C:\\Users\\ToreSinding\\Documents\\projects\\teletext-server\\ttx.cfg");
+	editserver::start();
+	
+	int i = 0;
+
+
+	/*
+	while (1) {
+		for (auto packet : ttxEncode::encode_page_entry(carousel.get_next_page_entry())) {
+			i = 0;
+			for (auto ch : *packet) {
+				if (i++ >= 3);
+					//putchar(ch);
+			}
+		}
+	}
+	*/
+	system("pause");
+}
+
+#ifdef LOL
 #include <stdio.h>
 #include <iostream>
 #include <array>
@@ -5,9 +40,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
+
+#include <boost/tokenizer.hpp>
 
 #include "ttxdata.cpp"
 #include "parity.cpp"
@@ -27,8 +61,8 @@ class TrivialPageDumper {
             }
         }
     private:
-        void const print_header(ttxPageAddress_p const & addr) {
-            printf("[00] P%3s %34s\n", addr->to_str().c_str(), "Page dumper");
+        void const print_header(const ttxPageAddress & addr) {
+            printf("[00] P%3s %34s\n", addr.to_str().c_str(), "Page dumper");
         }
 
         void const dump_line(ttxLine_p const & line) {
@@ -45,28 +79,14 @@ class TrivialPageDumper {
 
 };
 
-int main() {
+int maine() {
     logging::core::get()->set_filter
         (
          logging::trivial::severity >= logging::trivial::error
         );
-    ttxStaticPageSet_p page_set = std::make_shared<ttxStaticPageSet>(boost::filesystem::path("pages"));
-    ttxCarousel carousel;
-    TeletextEncoder encoder;
 
-    carousel.attach(page_set);
-
-    int i=0;
-
-    while(1) {
-        for (auto packet: encoder.encode(carousel.get_next_page_entry())) {
-            i = 0;
-            for (auto ch: *packet) {
-                if(i++ >= 3)
-                    putchar(ch);
-            }
-        }
-    }
 
     return 0;
 }
+
+#endif
