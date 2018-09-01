@@ -1,12 +1,18 @@
+#ifdef _WIN32
 #undef UNICODE
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+// Need to link with Ws2_32.lib
+#pragma comment (lib, "Ws2_32.lib")
+// #pragma comment (lib, "Mswsock.lib")
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <boost/log/core.hpp>
@@ -23,13 +29,6 @@
 #include "ttxdata.hpp"
 #include "encoder.hpp"
 #include "persist.hpp"
-
-// Need to link with Ws2_32.lib
-#pragma comment (lib, "Ws2_32.lib")
-// #pragma comment (lib, "Mswsock.lib")
-
-
-
 
 namespace editserver {
 	size_t EditConnection::send_str(std::string str) {
@@ -371,4 +370,4 @@ namespace editserver {
 	}
 
 }
-
+#endif
