@@ -30,3 +30,5 @@ ttx_server
 
 # Vim temporary files
 *.swp
+
+ttxserver
