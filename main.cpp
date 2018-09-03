@@ -9,7 +9,7 @@
 #include <boost/log/expressions.hpp>
 #include "sinks/sinks.cpp"
 #include <boost/thread.hpp>
-#include "editserver/editserver.cpp"
+#include "editserver/editserver.hpp"
 ttxCarousel carousel;
 
 int main() {
@@ -18,6 +18,12 @@ int main() {
 
     ttxSink * sink = SinkFactory::get_sink(config::get_value<std::string>("sink")); 
     boost::thread edit_thread(EditServerStart, config::get_value<int>("edit_port"));
+    /* from deprecated editserver.cpp
+    ttxCarousel carousel;
+    for (auto page_entry : ttxPersist::load_directory("pages")) {
+        carousel.attach(page_entry);
+    }
+    */
 
     sink->start();
     edit_thread.join();

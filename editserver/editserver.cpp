@@ -1,6 +1,3 @@
-#ifndef __EDITSERVER_CPP 
-#define __EDITSERVER_CPP
-
 #include <iostream>
 #include <string>
 #include <boost/algorithm/string/trim.hpp>
@@ -10,84 +7,80 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-#include <boost/asio.hpp>
+
+#include "editserver/editserver.hpp"
 
 using boost::asio::ip::tcp;
 
-class ttxEditConnection
-: public boost::enable_shared_from_this<ttxEditConnection>
+
+ttxEditCLI::ttxEditCLI(ttxEditConnection * connection) {
+    _connection = connection;
+}
+
+void ttxEditCLI::got_line(std::string input_line) {
+}
+void ttxEditCLI::got_connection() {
+    _connection->send_line("Teletext server edit protocol 1.0, please login");
+}
+
+
+tcp::socket& ttxEditConnection::socket()
 {
-    public:
-        typedef boost::shared_ptr<ttxEditConnection> pointer;
+    return socket_;
+}
 
-        static pointer create(boost::asio::io_service& io_service)
-        {
-            BOOST_LOG_TRIVIAL(info) << "Instantiating new listener";
-            return pointer(new ttxEditConnection(io_service));
-        }
+void ttxEditConnection::send_line(std::string str) {
+    boost::asio::async_write(socket_, boost::asio::buffer(str + "\r\n"),
+            boost::bind(&ttxEditConnection::handle_write, shared_from_this(),
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
+}
 
-        tcp::socket& socket()
-        {
-            return socket_;
-        }
+void ttxEditConnection::start()
+{
+    BOOST_LOG_TRIVIAL(info) << "Connection opened from " << socket_.remote_endpoint();
 
-        void start()
-        {
-            BOOST_LOG_TRIVIAL(info) << "Connection opened from " << socket_.remote_endpoint();
-            message_ = "HELLO\n";
+    boost::asio::async_read_until(socket_, input_buf_, "\r\n",
+            boost::bind(
+                &ttxEditConnection::handle_read, shared_from_this(),
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred)
+            );
 
-            boost::asio::async_write(socket_, boost::asio::buffer(message_),
-                    boost::bind(&ttxEditConnection::handle_write, shared_from_this(),
-                        boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred));
+}
 
+ttxEditConnection::ttxEditConnection(boost::asio::io_service& io_service)
+    : socket_(io_service), cli(this) {
+    }
+
+void ttxEditConnection::handle_read(const boost::system::error_code& error, size_t /*bytes_transferred*/) {
+    if(error)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "Got error handling read!";
+    } else {
+        std::string s( (std::istreambuf_iterator<char>(&input_buf_)), std::istreambuf_iterator<char>() );
+        boost::algorithm::trim_right(s);
+
+        BOOST_LOG_TRIVIAL(info) << "Got data from socket: " << s;
+
+        if(is_running_) {
             boost::asio::async_read_until(socket_, input_buf_, "\r\n",
                     boost::bind(
                         &ttxEditConnection::handle_read, shared_from_this(),
                         boost::asio::placeholders::error,
                         boost::asio::placeholders::bytes_transferred)
                     );
-
         }
+    }
+}
 
-    private:
-        ttxEditConnection(boost::asio::io_service& io_service)
-            : socket_(io_service) {
-        }
+void ttxEditConnection::handle_write(const boost::system::error_code& error, size_t /*bytes_transferred*/) {
+    if(error)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "Got error handling write!";
+    }
+}
 
-        void handle_read(const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-            if(error)
-            {
-                BOOST_LOG_TRIVIAL(warning) << "Got error handling read!";
-            } else {
-                std::string s( (std::istreambuf_iterator<char>(&input_buf_)), std::istreambuf_iterator<char>() );
-                boost::algorithm::trim_right(s);
-
-                BOOST_LOG_TRIVIAL(info) << "Got data from socket: " << s;
-
-                if(is_running_) {
-                    boost::asio::async_read_until(socket_, input_buf_, "\r\n",
-                            boost::bind(
-                                &ttxEditConnection::handle_read, shared_from_this(),
-                                boost::asio::placeholders::error,
-                                boost::asio::placeholders::bytes_transferred)
-                            );
-                }
-            }
-        }
-
-        void handle_write(const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-            if(error)
-            {
-                BOOST_LOG_TRIVIAL(warning) << "Got error handling write!";
-            }
-        }
-
-        tcp::socket socket_;
-        std::string message_;
-        boost::asio::streambuf input_buf_;
-        bool is_running_ = true;
-};
 
 class ttxEditServer
 {
@@ -144,4 +137,8 @@ int EditServerStart(int port_no)
     return 0;
 }
 
-#endif
+ttxEditConnection::pointer ttxEditConnection::create(boost::asio::io_service& io_service)
+{
+    BOOST_LOG_TRIVIAL(info) << "Instantiating new listener";
+    return ttxEditConnection::pointer(new ttxEditConnection(io_service));
+}

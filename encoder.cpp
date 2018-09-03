@@ -49,7 +49,7 @@ namespace ttxEncode {
 
         static void write_packet_header_text(ttxPacket_p & packet){
 			// Write and encode the header text.
-			// Bugs: The text is hard-coded. 
+			// FIXME: The text is hard-coded. 
 			// See spec: 9.3.1
             char *p = (char *)packet.get();
             time_t now;
