@@ -8,6 +8,8 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include "sinks/sinks.cpp"
+#include <boost/thread.hpp>
+#include "editserver/editserver.cpp"
 ttxCarousel carousel;
 
 int main() {
@@ -15,6 +17,8 @@ int main() {
     config::read_file("ttx.cfg");
 
     ttxSink * sink = SinkFactory::get_sink(config::get_value<std::string>("sink")); 
+    boost::thread edit_thread(EditServerStart, config::get_value<int>("edit_port"));
 
     sink->start();
+    edit_thread.join();
 }
