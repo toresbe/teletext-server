@@ -1,14 +1,14 @@
 BOOST = /usr/include/boost
 
 CC = clang
-CFLAGS = -g -O2
+CFLAGS = -g -O0
 CPPFLAGS = -c -std=c++11 -DBOOST_LOG_DYN_LINK
-LIBS = -lstdc++ -lboost_log -pthread -lboost_filesystem -lboost_system
+LIBS = -lrt -lstdc++ -lboost_log -pthread -lboost_filesystem -lboost_system
 INCLUDE = .
 
 EXEC = ttxserver
 
-SOURCES = $(wildcard *.cpp)
+SOURCES = $(wildcard *.cpp) $(wildcard sinks/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 
 $(EXEC): $(OBJECTS)
