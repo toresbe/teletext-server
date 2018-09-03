@@ -14,6 +14,7 @@
 #include "ttxdata.hpp"
 #include "parity.hpp"
 #include "encoder.hpp"
+#include "sinks/sinks.hpp"
 
 namespace logging = boost::log;
 
@@ -43,5 +44,8 @@ class TrivialPageDumper {
 
             std::cout << '\n';
         }
-
 };
+
+void DebugSink::start() {
+    BOOST_LOG_TRIVIAL(info) << "Starting debug sink";
+}
