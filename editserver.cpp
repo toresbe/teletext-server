@@ -7,33 +7,6 @@
 #include "persist.hpp"
 
 namespace editserver {
-	TokenizedCommandLine EditConnection::tokenize_string(std::string cmd) {
-		size_t next_sep = std::string::npos;
-		std::vector<std::string> tokens;
-
-		do {
-			cmd = cmd.substr(next_sep + 1);
-			next_sep = cmd.find_first_of(" ");
-			tokens.push_back(cmd.substr(0, next_sep));
-		} while (next_sep != std::string::npos);
-		return tokens;
-	}
-
-	bool EditConnection::cmd_login(const TokenizedCommandLine & cmd_tokens) {
-		try {
-			write_permissions = config::get_user_perms(cmd_tokens[1], cmd_tokens[2]);
-			username = cmd_tokens[1];
-			BOOST_LOG_TRIVIAL(info) << "User \"" << username << "\" authenticated.";
-		}
-		catch (std::invalid_argument e) {
-			BOOST_LOG_TRIVIAL(warning) << "Invalid user login attempt: " << e.what();
-			return false;
-		}
-
-		send_str("Welcome!\n");
-
-		return true;
-	}
 
 	bool EditConnection::cmd_update_page(const TokenizedCommandLine & cmd_tokens) {
 		ttxLineNumber	line_num;
@@ -70,34 +43,8 @@ namespace editserver {
 		BOOST_LOG_TRIVIAL(info) << "Client connection thread active";
 		int iResult;
 		send_str("Teletext server edit protocol 1.0, please login\n");
-		TokenizedCommandLine cmd_tokens;
-		bool is_authenticated = false;
 
 		while (1) {
-			try {
-				cmd_tokens = tokenize_string(get_line());
-			}
-			catch (std::underflow_error) {
-				BOOST_LOG_TRIVIAL(info) << "Client connection reset by peer";
-				break;
-			}
-			auto cmd_arg0 = boost::to_upper_copy(cmd_tokens.at(0));
-
-			if (cmd_arg0 == "LOGIN") {
-				is_authenticated = cmd_login(cmd_tokens);
-			}
-
-			if (cmd_arg0 == "BYE") {
-				send_str("Y'all come back now, y'hear?\n");
-				break;
-			}
-
-			// protected instructions
-			if (is_authenticated) {
-				if (cmd_arg0 == "UPDATE") {
-					cmd_update_page(cmd_tokens);
-				}
-			}
 		}
 
 

@@ -2,7 +2,11 @@
 #define __EDITSERVER_HPP
 
 #include <boost/asio.hpp>
+#include "config.hpp"
+
 class ttxEditConnection;
+typedef	std::vector<std::string> TokenizedCommandLine;
+typedef std::vector<ttxPageAddress>	UserWritePermissions;
 
 class ttxEditCLI {
     public:
@@ -10,9 +14,15 @@ class ttxEditCLI {
         void got_line(std::string input_line);
         void got_connection();
     private:
+        bool cmd_login(const TokenizedCommandLine & cmd_tokens);
+        bool cmd_update_page(const TokenizedCommandLine & cmd_tokens);
+        TokenizedCommandLine tokenize_string(std::string cmd);
         ttxEditConnection * _connection;
+        //fixme: inelegant
+        UserWritePermissions write_permissions;
+        std::string username;
+        bool is_authenticated_ = false;
 };
-
 
 class ttxEditConnection
 : public boost::enable_shared_from_this<ttxEditConnection>
@@ -33,9 +43,7 @@ class ttxEditConnection
         boost::asio::ip::tcp::socket socket_;
         boost::asio::streambuf input_buf_;
         bool is_running_ = true;
-        bool is_authenticated_ = false;
 };
-
 
 int EditServerStart(int port_no);
 #endif

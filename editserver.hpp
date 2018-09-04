@@ -40,7 +40,6 @@ namespace editserver {
 		void operator() (ttxCarousel * Carousel);
 	};
 
-	typedef std::vector<ttxPageAddress>	UserWritePermissions;
 
 	class EditConnection {
 		ttxCarousel * carousel;
@@ -53,7 +52,6 @@ namespace editserver {
 		bool cmd_update_page(const TokenizedCommandLine & cmd_tokens);
 
 
-		UserWritePermissions write_permissions;
 		size_t send_str(std::string str);
 		char * newline_in_buffer();
 		std::string get_string_from_buffer(char * newline);
