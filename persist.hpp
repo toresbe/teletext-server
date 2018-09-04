@@ -1,6 +1,6 @@
 #pragma once
 #include <boost/filesystem.hpp>
-#include "ttxdata.hpp"
+#include "ttxdata/ttxdata.hpp"
 
 namespace ttxPersist {
 	ttxPage_p load_file(const boost::filesystem::path & path);

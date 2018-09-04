@@ -1,7 +1,6 @@
 #include "config.hpp"
-#include "editserver.hpp"
-#include "ttxdata.hpp"
-#include "encoder.hpp"
+#include "ttxdata/ttxdata.hpp"
+#include "ttxdata/encoder.hpp"
 #include "persist.hpp"
 #include <list>
 #include <boost/log/core.hpp>

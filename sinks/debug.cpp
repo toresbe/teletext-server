@@ -11,9 +11,9 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 
-#include "ttxdata.hpp"
-#include "parity.hpp"
-#include "encoder.hpp"
+#include "ttxdata/ttxdata.hpp"
+#include "ttxdata/parity.hpp"
+#include "ttxdata/encoder.hpp"
 #include "sinks/sinks.hpp"
 
 namespace logging = boost::log;
