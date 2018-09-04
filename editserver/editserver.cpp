@@ -40,7 +40,7 @@ void ttxEditCLI::got_line(std::string input_line) {
     // protected instructions
     if (is_authenticated_) {
         if (cmd_arg0 == "UPDATE") {
-            //cmd_update_page(cmd_tokens);
+            cmd_update_page(cmd_tokens);
         }
     }
 }
@@ -67,6 +67,11 @@ TokenizedCommandLine ttxEditCLI::tokenize_string(std::string cmd) {
 }
 
 bool ttxEditCLI::cmd_login(const TokenizedCommandLine & cmd_tokens) {
+    if (cmd_tokens.size() != 3) {
+        BOOST_LOG_TRIVIAL(warning) << "Invalid user login attempt, malformed login";
+        return false;
+    }
+
     try {
         write_permissions = config::get_user_perms(cmd_tokens[1], cmd_tokens[2]);
         username = cmd_tokens[1];
@@ -100,6 +105,33 @@ void ttxEditConnection::start()
                 boost::asio::placeholders::bytes_transferred)
             );
 
+}
+
+bool ttxEditCLI::cmd_update_page(const TokenizedCommandLine & cmd_tokens) {
+    ttxLineNumber	line_num;
+    ttxPage_p		page_p;
+    ttxLineData		line_data;
+    int				line_byte_counter = 0;
+
+    try {
+        ttxPageAddress addr(cmd_tokens.at(1));
+
+        line_num = std::stoi(cmd_tokens.at(2), 0, 16);
+
+        for (auto &&line_byte : line_data)
+            line_byte = std::stoi(cmd_tokens.at(3).substr(line_byte_counter++ * 2, 2), 0, 16);
+
+        //carousel->update_page_line(addr, line_num, line_data);
+
+        BOOST_LOG_TRIVIAL(info) << "Updating line " << addr << (unsigned int)line_num;
+        return true;
+
+    }
+    catch (std::exception e) {
+        BOOST_LOG_TRIVIAL(warning) << "Error updating page: " << e.what();
+        _connection->send_line(e.what());
+        return false;
+    }
 }
 
 ttxEditConnection::ttxEditConnection(boost::asio::io_service& io_service)
