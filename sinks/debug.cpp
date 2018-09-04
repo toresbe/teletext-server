@@ -20,20 +20,22 @@ namespace logging = boost::log;
 
 class TrivialPageDumper {
     public:
-        TrivialPageDumper(ttxPageEntry_p const & page) {
+        static void dump(ttxPageEntry * page) {
             print_header(page->first);
 
             for (auto entry: page->second->lines) {
                 printf("[%02d] ", entry.first);
                 dump_line(entry.second);
             }
+            printf("\x1b[30;0H");
         }
     private:
-        void const print_header(const ttxPageAddress & addr) {
+        static void const print_header(const ttxPageAddress & addr) {
+            printf("\x1b[0;0H");
             printf("[00] P%3s %34s\n", addr.to_str().c_str(), "Page dumper");
         }
 
-        void const dump_line(ttxLine_p const & line) {
+        static void const dump_line(ttxLine_p const & line) {
             uint8_t ch;
 
             for (int i = 0; i < sizeof(line->data); i++) {
@@ -48,4 +50,10 @@ class TrivialPageDumper {
 
 void DebugSink::start() {
     BOOST_LOG_TRIVIAL(info) << "Starting debug sink";
+    ttxDatastore * datastore = ttxDatastore::get_instance();
+    
+    while(1) {
+        auto page = datastore->get_next_page_entry();
+        TrivialPageDumper::dump(&page);
+    }
 }
