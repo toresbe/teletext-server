@@ -1,10 +1,12 @@
 # teletext-server
+
 Teletext data server
 
 # Todo
 
 - Write a better README.md
 - Write a better TODO list
+- Improve config file format
 - Implement subpage support
 - Extensive(!!) refactoring
 - Better portability (currently winsock only)

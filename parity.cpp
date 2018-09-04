@@ -38,10 +38,10 @@ namespace ttxParity {
 			// Obtain a nybble of data from a byte of Hamming 8/4 encoded data.
 			// See spec, section 8.2 
             uint8_t error = 0, out = 0;
-            error |= (xor_bits(in_byte, 0xA3)&&1);
-            error |= (xor_bits(in_byte, 0x8E)&&1) << 2;
-            error |= (xor_bits(in_byte, 0x3A)&&1) << 3;
-            error |= (xor_bits(in_byte, 0xFF)&&1) << 4;
+            error |= (xor_bits(in_byte, 0xA3)>0);
+            error |= (xor_bits(in_byte, 0x8E)>0) << 2;
+            error |= (xor_bits(in_byte, 0x3A)>0) << 3;
+            error |= (xor_bits(in_byte, 0xFF)>0) << 4;
             if (error) printf("Decoding %02X errors: %02X\n", in_byte, error);
 
             out = (in_byte & 0x02) >> 1|

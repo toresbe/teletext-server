@@ -8,8 +8,6 @@
 #include <fstream>
 #include <map>
 
-typedef	std::vector<std::string> TokenizedCommandLine;
-
 namespace config {
 	typedef std::map<std::string, std::string> settings_list_t;
 
