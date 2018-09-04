@@ -84,14 +84,14 @@ typedef std::shared_ptr<ttxPageEntry>           ttxPageEntry_p;
 typedef std::pair<ttxLineNumber, ttxLine_p>     ttxNumberedLine;
 typedef std::shared_ptr<ttxNumberedLine>        ttxNumberedLine_p;
 
-class ttxCarousel {
+class ttxDatastore {
 private:
 	ttxPageEntry_map							page_list;
 	ttxPageEntry_map::iterator					page_list_iterator;
 	std::mutex									global_lock;
 
 public:
-	ttxCarousel(void);
+	ttxDatastore(void);
 	void	update_page_line(const ttxPageAddress & addr,
 		const ttxLineNumber & line_num,
 		const ttxLineData & line_data);
@@ -105,6 +105,6 @@ public:
 	ttxPageEntry_p  operator++(int);
 };
 
-typedef std::shared_ptr<ttxCarousel>                    ttxCarousel_p;
+typedef std::shared_ptr<ttxDatastore>                    ttxDatastore_p;
 typedef	std::array<uint8_t, 45>							ttxEncodedLine;
 typedef std::shared_ptr<ttxEncodedLine>                 ttxEncodedLine_p;
