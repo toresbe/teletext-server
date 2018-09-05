@@ -24,8 +24,9 @@ class TrivialPageDumper {
             print_header(page->first);
 
             for (auto entry: page->second->lines) {
-                printf("[%02d] ", entry.first);
+                printf("[%02d] \x1b[37m", entry.first);
                 dump_line(entry.second);
+                printf("\x1b[0m");
             }
             printf("\x1b[30;0H");
         }
@@ -35,13 +36,29 @@ class TrivialPageDumper {
             printf("[00] P%3s %34s\n", addr.to_str().c_str(), "Page dumper");
         }
 
+        static inline void set_color(const uint8_t & ch) {
+                printf("\x1b[3%dm", ch);
+        }
+
+        static inline bool is_color(const uint8_t & ch) {
+            if( (ch >= 0) && (ch <= 7) )
+                return true;
+            return false;
+        }
+
+        static void put_char(const uint8_t & ch) {
+                if (isprint(ch)) std::cout << ch;
+                else if (is_color(ch)) {
+                    set_color(ch);
+                }
+                else std::cout << '.';
+        }
+
         static void const dump_line(ttxLine_p const & line) {
             uint8_t ch;
 
             for (int i = 0; i < sizeof(line->data); i++) {
-                ch = line->data[i];
-                if (isprint(ch)) std::cout << ch;
-                else std::cout << '.';
+                put_char(line->data[i]);
             }
 
             std::cout << '\n';
