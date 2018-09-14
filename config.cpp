@@ -5,7 +5,7 @@
 #include <fstream>
 #include <map>
 #include "config.hpp"
-#include "ttxdata.hpp"
+#include "ttxdata/ttxdata.hpp"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>

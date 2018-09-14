@@ -9,7 +9,8 @@ Teletext data server
 - Improve config file format
 - Implement subpage support
 - Extensive(!!) refactoring
-- Better portability (currently winsock only)
+    - Split ttxCarousel into a page database and the actual carousel 
+        so multiple sinks can have multiple independent page feeders
 
 # Requirements:
 

@@ -1,5 +1,5 @@
 #include <boost/filesystem.hpp>
-#include "ttxdata.hpp"
+#include "ttxdata/ttxdata.hpp"
 
 namespace fs = boost::filesystem;
 

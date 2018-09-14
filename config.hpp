@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "ttxdata.hpp"
+#include "ttxdata/ttxdata.hpp"
 #include <sstream>
 #include <iostream>
 #include <list>

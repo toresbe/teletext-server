@@ -122,16 +122,16 @@ ttxLine_p & ttxPage::operator [](ttxLineNumber i) {
 	}
 }
 
-ttxCarousel::ttxCarousel() {
+ttxDatastore::ttxDatastore() {
 	page_list_iterator = page_list.begin();
 };
 
-void ttxCarousel::attach(const ttxPageEntry & new_page) {
+void ttxDatastore::attach(const ttxPageEntry & new_page) {
 	BOOST_LOG_TRIVIAL(info) << "Attaching new page to carousel";
 	page_list.insert(new_page);
 }
 
-ttxPageEntry ttxCarousel::get_next_page_entry() {
+ttxPageEntry ttxDatastore::get_next_page_entry() {
 	global_lock.lock();
 	assert(!page_list.empty());
 
@@ -145,7 +145,7 @@ ttxPageEntry ttxCarousel::get_next_page_entry() {
 	return retval;
 }
 
-ttxPage_p	ttxCarousel::get_page(const ttxPageAddress & addr) {
+ttxPage_p	ttxDatastore::get_page(const ttxPageAddress & addr) {
 	global_lock.lock();
 
 	try {
@@ -159,7 +159,11 @@ ttxPage_p	ttxCarousel::get_page(const ttxPageAddress & addr) {
 	}
 }
 
-void	ttxCarousel::update_page_line(
+ttxDatastore *ttxDatastore::get_instance() {
+        static ttxDatastore instance;
+        return &instance;
+}
+void	ttxDatastore::update_page_line(
 						const ttxPageAddress & addr, 
 						const ttxLineNumber & line_num, 
 						const ttxLineData & line_data) {

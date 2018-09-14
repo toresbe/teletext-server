@@ -8,7 +8,7 @@ INCLUDE = .
 
 EXEC = ttxserver
 
-SOURCES = $(wildcard *.cpp) $(wildcard editserver/*.cpp) $(wildcard sinks/*.cpp)
+SOURCES = $(wildcard *.cpp) $(wildcard editserver/*.cpp) $(wildcard sinks/*.cpp) $(wildcard ttxdata/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 
 $(EXEC): $(OBJECTS)
