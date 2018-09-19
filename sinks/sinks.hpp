@@ -10,4 +10,8 @@ class DebugSink: public ttxSink {
     void start();
 };
 
+class ShmSink: public ttxSink {
+    void start();
+};
+
 #endif

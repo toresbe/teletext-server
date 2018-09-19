@@ -16,10 +16,10 @@ int main() {
 
     ttxSink * sink = SinkFactory::get_sink(config::get_value<std::string>("sink")); 
     boost::thread edit_thread(EditServerStart, config::get_value<int>("edit_port"));
-    ttxDatastore * carousel = ttxDatastore::get_instance();
+    ttxDatastore * datastore = ttxDatastore::get_instance();
 
     for (auto page_entry : ttxPersist::load_directory("pages")) {
-        carousel->attach(page_entry);
+        datastore->attach(page_entry);
     }
 
     sink->start();

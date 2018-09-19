@@ -10,6 +10,8 @@ class SinkFactory {
 
         if(requested_sink == "debug") {
             selected_sink = new DebugSink();
+        } else if(requested_sink == "shm") {
+            selected_sink = new ShmSink();
         } else {
             selected_sink = nullptr;
             BOOST_LOG_TRIVIAL(error) << "Configured sink is not implemented!";

@@ -127,7 +127,7 @@ ttxDatastore::ttxDatastore() {
 };
 
 void ttxDatastore::attach(const ttxPageEntry & new_page) {
-	BOOST_LOG_TRIVIAL(info) << "Attaching new page to carousel";
+	BOOST_LOG_TRIVIAL(info) << "Attaching new page to datastore";
 	page_list.insert(new_page);
 }
 

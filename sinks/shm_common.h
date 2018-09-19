@@ -1,5 +1,5 @@
-#ifndef SHM_COMMON_H
-#define SHM_COMMON_H
+#ifndef __SHM_COMMON_H
+#define __SHM_COMMON_H
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
