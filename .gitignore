@@ -31,4 +31,11 @@ ttx_server
 # Vim temporary files
 *.swp
 
+# Executable
 ttxserver
+
+# Visual Studio cruft
+.vs/
+Debug/
+/*.sln
+/*.vcxproj*

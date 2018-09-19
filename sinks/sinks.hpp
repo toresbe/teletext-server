@@ -10,8 +10,10 @@ class DebugSink: public ttxSink {
     void start();
 };
 
+#ifndef _WIN32
 class ShmSink: public ttxSink {
     void start();
 };
+#endif
 
 #endif

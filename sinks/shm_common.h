@@ -1,14 +1,15 @@
 #ifndef __SHM_COMMON_H
 #define __SHM_COMMON_H
+#ifndef _WIN32
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <sys/mman.h>
 #include <semaphore.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #define LINES_PER_FIELD 10 
 #define FIELDS_PER_BUFFER 1000
@@ -49,4 +50,5 @@ typedef struct {
 
 ttx_shm_buffer_file * open_shm_file(char * service_name);
 void shm_flip_buffers(ttx_shm_buffer_file * buf);
+#endif
 #endif

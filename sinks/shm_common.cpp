@@ -1,3 +1,4 @@
+#ifndef _WIN32
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -49,3 +50,4 @@ void shm_flip_buffers(ttx_shm_buffer_file * buf) {
     msync(buf, sizeof(buf->header), MS_SYNC);
     sem_post(&buf->flip_sem);
 }
+#endif

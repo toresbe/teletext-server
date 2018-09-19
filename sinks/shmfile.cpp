@@ -1,3 +1,5 @@
+#ifndef _WIN32
+
 #include "ttxdata/parity.hpp"
 #include "ttxdata/ttxdata.hpp"
 #include "ttxdata/encoder.hpp"
@@ -51,3 +53,5 @@ void ShmSink::start() {
     //    auto page = datastore->get_next_page_entry();
     //}
 }
+
+#endif
