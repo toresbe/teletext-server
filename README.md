@@ -8,6 +8,9 @@ Teletext data server
 - Write a better TODO list
 - Improve config file format
 - Implement subpage support
+- Create templating support
+    - Define template file format
+    - Extend edit server protocol to update templates
 - Extensive(!!) refactoring
     - Split ttxCarousel into a page database and the actual carousel 
         so multiple sinks can have multiple independent page feeders
