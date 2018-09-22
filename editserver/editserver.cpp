@@ -49,11 +49,6 @@ void ttxEditCLI::got_connection() {
     _connection->send_line("Teletext server edit protocol 1.0, please login");
 }
 
-tcp::socket& ttxEditConnection::socket()
-{
-    return socket_;
-}
-
 TokenizedCommandLine ttxEditCLI::tokenize_string(std::string cmd) {
     size_t next_sep = std::string::npos;
     std::vector<std::string> tokens;
@@ -64,6 +59,33 @@ TokenizedCommandLine ttxEditCLI::tokenize_string(std::string cmd) {
         tokens.push_back(cmd.substr(0, next_sep));
     } while (next_sep != std::string::npos);
     return tokens;
+}
+
+bool ttxEditCLI::cmd_update_page(const TokenizedCommandLine & cmd_tokens) {
+	ttxLineNumber	line_num;
+	ttxPage_p		page_p;
+	ttxLineData		line_data;
+	int				line_byte_counter = 0;
+
+	try {
+		ttxPageAddress addr(cmd_tokens.at(1));
+
+		line_num = std::stoi(cmd_tokens.at(2), 0, 16);
+
+		for (auto &&line_byte : line_data)
+			line_byte = std::stoi(cmd_tokens.at(3).substr(line_byte_counter++ * 2, 2), 0, 16);
+
+		//carousel->update_page_line(addr, line_num, line_data);
+
+		BOOST_LOG_TRIVIAL(info) << "(prototype code so not) Updating line " << addr << (unsigned int)line_num;
+		return true;
+
+	}
+	catch (std::exception e) {
+		BOOST_LOG_TRIVIAL(warning) << "Error updating page: " << e.what();
+		_connection->send_line(e.what());
+		return false;
+	}
 }
 
 bool ttxEditCLI::cmd_login(const TokenizedCommandLine & cmd_tokens) {
@@ -87,6 +109,11 @@ bool ttxEditCLI::cmd_login(const TokenizedCommandLine & cmd_tokens) {
     return true;
 }
 
+tcp::socket& ttxEditConnection::socket()
+{
+	return socket_;
+}
+
 void ttxEditConnection::send_line(std::string str) {
     boost::asio::async_write(socket_, boost::asio::buffer(str + "\r\n"),
             boost::bind(&ttxEditConnection::handle_write, shared_from_this(),
@@ -105,33 +132,6 @@ void ttxEditConnection::start()
                 boost::asio::placeholders::bytes_transferred)
             );
 
-}
-
-bool ttxEditCLI::cmd_update_page(const TokenizedCommandLine & cmd_tokens) {
-    ttxLineNumber	line_num;
-    ttxPage_p		page_p;
-    ttxLineData		line_data;
-    int				line_byte_counter = 0;
-
-    try {
-        ttxPageAddress addr(cmd_tokens.at(1));
-
-        line_num = std::stoi(cmd_tokens.at(2), 0, 16);
-
-        for (auto &&line_byte : line_data)
-            line_byte = std::stoi(cmd_tokens.at(3).substr(line_byte_counter++ * 2, 2), 0, 16);
-
-        //carousel->update_page_line(addr, line_num, line_data);
-
-        BOOST_LOG_TRIVIAL(info) << "(prototype code so not) Updating line " << addr << (unsigned int)line_num;
-        return true;
-
-    }
-    catch (std::exception e) {
-        BOOST_LOG_TRIVIAL(warning) << "Error updating page: " << e.what();
-        _connection->send_line(e.what());
-        return false;
-    }
 }
 
 ttxEditConnection::ttxEditConnection(boost::asio::io_service& io_service)
@@ -166,7 +166,6 @@ void ttxEditConnection::handle_write(const boost::system::error_code& error, siz
         BOOST_LOG_TRIVIAL(warning) << "Got error handling write!";
     }
 }
-
 
 class ttxEditServer
 {
