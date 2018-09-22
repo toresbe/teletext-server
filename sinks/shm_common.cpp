@@ -11,6 +11,7 @@
 #include <sys/types.h>
 
 #include "shm_common.h"
+#include "ttxdata/ttxdata.hpp"
 
 ttx_shm_buffer_file * open_shm_file(char * service_name) {
     char shm_filename[64] = "obe_ttx_";

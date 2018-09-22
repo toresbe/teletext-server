@@ -5,6 +5,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/asio.hpp>
+#include <boost/chrono.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "ttxdata/ttxdata.hpp"
@@ -12,6 +13,7 @@
 #include "config.hpp"
 #include "sinks.hpp"
 #include "ttxdata/carousel.cpp"
+
 using boost::asio::ip::tcp;
 
 class TcpSinkListener;
@@ -36,20 +38,23 @@ public:
 	}
 
 	void send_field(ttxEncodedField_p field_p) {
-		boost::asio::async_write(socket_, boost::asio::buffer(*field_p->data()),
-			boost::bind(&TcpSinkClient::handle_write, shared_from_this(),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+            boost::asio::async_write(socket_, boost::asio::buffer(field_p->data(), 45*10),
+                    boost::bind(&TcpSinkClient::handle_write, shared_from_this(),
+                        boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred));
 	}
 
-	void handle_write(const boost::system::error_code& error, size_t /*bytes_transferred*/) {
-		BOOST_LOG_TRIVIAL(warning) << "Got no error handling write!";
-
-		if (error)
-		{
-			is_dead = true;
-			BOOST_LOG_TRIVIAL(warning) << "Got error handling write!";
-		}
+	void handle_write(const boost::system::error_code& error, size_t bytes_transferred) {
+            if (!is_dead) {
+                if (error)
+                {
+                    is_dead = true;
+                    boost::system::error_code ec;
+                    socket_.close(ec);
+                    BOOST_LOG_TRIVIAL(warning) << "Got error handling write!";
+                }
+                BOOST_LOG_TRIVIAL(info) << "Wrote " << bytes_transferred << " bytes.";
+            }
 	}
 
 	boost::asio::ip::tcp::socket& socket() {
@@ -65,7 +70,7 @@ class TcpSinkListener {
 public:
 	TcpSinkListener(unsigned int port_no, boost::asio::io_service & io_service) :
 		tcp_acceptor(io_service, tcp::endpoint(tcp::v4(), port_no)),
-		frame_timer(io_service, boost::posix_time::milliseconds(20))
+		frame_timer(io_service, boost::chrono::milliseconds(40))
 	{
 		BOOST_LOG_TRIVIAL(info) << "TCP sink initialized, set to listen on port " << port_no;
 		accept_connections();
@@ -103,7 +108,7 @@ public:
 			listener->send_field(field);
 		}
 
-		//frame_timer.expires_at(frame_timer.expires_at() + boost::posix_time::milliseconds(20));
+		frame_timer.expires_at(frame_timer.expires_at() + boost::chrono::milliseconds(40));
 		frame_timer.async_wait(boost::bind(&TcpSinkListener::frame_timeout, this));
 	}
 
@@ -124,7 +129,7 @@ private:
 		accept_connections();
 	}
 
-	boost::asio::deadline_timer frame_timer;
+        boost::asio::basic_waitable_timer<boost::chrono::high_resolution_clock> frame_timer;
 	tcp::acceptor tcp_acceptor;
 };
 

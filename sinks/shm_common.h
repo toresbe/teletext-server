@@ -13,6 +13,7 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <ttxdata/ttxdata.hpp>
 
 
 typedef int timecode_t; // not thought out yet, placeholder type, assume it's fields since epoch or something
