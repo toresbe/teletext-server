@@ -123,7 +123,7 @@ bool ttxEditCLI::cmd_update_page(const TokenizedCommandLine & cmd_tokens) {
 
         //carousel->update_page_line(addr, line_num, line_data);
 
-        BOOST_LOG_TRIVIAL(info) << "Updating line " << addr << (unsigned int)line_num;
+        BOOST_LOG_TRIVIAL(info) << "(prototype code so not) Updating line " << addr << (unsigned int)line_num;
         return true;
 
     }
