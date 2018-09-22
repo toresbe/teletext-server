@@ -29,7 +29,7 @@ namespace ttxEncode {
         }
 
         static void write_packet_address(ttxPacket_p packet, const ttxPageAddress & address, int packet_number) {
-			// Write packet address, consisting of 
+			// Write packet address, consisting of
 			// magazine 0-7, first digit of page number (0 is presented as 8, for some reason)
 			// packet address, 0-31
 			// See spec: 7.2.2
@@ -49,7 +49,7 @@ namespace ttxEncode {
 
         static void write_packet_header_text(ttxPacket_p & packet){
 			// Write and encode the header text.
-			// FIXME: The text is hard-coded. 
+			// FIXME: The text is hard-coded.
 			// See spec: 9.3.1
             char *p = (char *)packet.get();
             time_t now;
@@ -115,7 +115,7 @@ namespace ttxEncode {
 
             return packet;
         }
-        
+
         ttxPacket_p_list encode_page_entry(const ttxPageEntry & page_entry) {
             ttxPacket_p_list packet_list;
             int line_number = 1;

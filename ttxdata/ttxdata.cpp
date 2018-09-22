@@ -164,8 +164,8 @@ ttxDatastore *ttxDatastore::get_instance() {
         return &instance;
 }
 void	ttxDatastore::update_page_line(
-						const ttxPageAddress & addr, 
-						const ttxLineNumber & line_num, 
+						const ttxPageAddress & addr,
+						const ttxLineNumber & line_num,
 						const ttxLineData & line_data) {
 	ttxPage_p page;
 	ttxLine_p line;

@@ -68,7 +68,7 @@ class TrivialPageDumper {
 void DebugSink::start() {
     BOOST_LOG_TRIVIAL(info) << "Starting debug sink";
     ttxDatastore * datastore = ttxDatastore::get_instance();
-    
+
     while(1) {
         auto page = datastore->get_next_page_entry();
         TrivialPageDumper::dump(&page);

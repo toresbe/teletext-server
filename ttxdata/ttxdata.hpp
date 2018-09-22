@@ -16,6 +16,10 @@
 
 typedef	std::array <uint8_t, 40> ttxLineData;
 
+#define LINES_PER_FIELD 10
+#define FIELDS_PER_BUFFER 1000
+#define LINES_PER_BUFFER LINES_PER_FIELD * FIELDS_PER_BUFFER
+
 class ttxLine {
     private:
     public:
@@ -92,6 +96,7 @@ class ttxDatastore {
         std::mutex									global_lock;
 
     public:
+		typedef std::shared_ptr<ttxDatastore> pointer;
         static ttxDatastore * get_instance();
         ttxDatastore(const ttxDatastore&) = delete;
         ttxDatastore& operator=(const ttxDatastore&) = delete;
@@ -107,7 +112,3 @@ class ttxDatastore {
         ttxPageEntry_p  operator*();
         ttxPageEntry_p  operator++(int);
 };
-
-typedef std::shared_ptr<ttxDatastore>                    ttxDatastore_p;
-typedef	std::array<uint8_t, 45>							ttxEncodedLine;
-typedef std::shared_ptr<ttxEncodedLine>                 ttxEncodedLine_p;

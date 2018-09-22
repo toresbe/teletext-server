@@ -29,10 +29,10 @@ ttx_shm_buffer_file * open_shm_file(char * service_name) {
 
     ttx_shm_buffer_file * buffer_pointer = (ttx_shm_buffer_file *) \
                                            mmap(
-                                                   NULL, 
-                                                   sizeof(ttx_shm_buffer_file), 
-                                                   PROT_READ | PROT_WRITE, 
-                                                   MAP_SHARED, 
+                                                   NULL,
+                                                   sizeof(ttx_shm_buffer_file),
+                                                   PROT_READ | PROT_WRITE,
+                                                   MAP_SHARED,
                                                    shm_file,
                                                    0
                                                );

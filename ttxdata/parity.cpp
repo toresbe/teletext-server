@@ -10,10 +10,10 @@ namespace ttxParity {
         //  - Implement 24/18 Hamming encoder/decoder (not likely to be used)
         //
         // For description of Teletext parity schemes refer to ETS 300 706, pt. 8
-        // 
+        //
         //
         uint8_t xor_bits(uint8_t in_byte, uint8_t mask) {
-			// xor_bits: XOR a set of bits in a byte. eg with mask=0xFF, 
+			// xor_bits: XOR a set of bits in a byte. eg with mask=0xFF,
 			// the function will return the XOR of every bit in the byte.
             int i, result = 1;
 
@@ -36,7 +36,7 @@ namespace ttxParity {
 
         uint8_t deham_8_4(uint8_t in_byte) {
 			// Obtain a nybble of data from a byte of Hamming 8/4 encoded data.
-			// See spec, section 8.2 
+			// See spec, section 8.2
             uint8_t error = 0, out = 0;
             error |= (xor_bits(in_byte, 0xA3)>0);
             error |= (xor_bits(in_byte, 0x8E)>0) << 2;
@@ -85,7 +85,7 @@ namespace ttxParity {
         }
 
         uint16_t enham_8_16(uint8_t in_byte) {
-			// convenience function: Take a bytes, produce a Hamming 16/8 pair 
+			// convenience function: Take a bytes, produce a Hamming 16/8 pair
 			// and return the encoded pair as a 16-bit word.
             uint16_t out;
 
@@ -93,10 +93,10 @@ namespace ttxParity {
             out |= enham_4_8((in_byte & 0xF0) >> 4) << 8;
 
             return out;
-        } 
+        }
 
         uint8_t deham_16_8(uint8_t lsb, uint8_t msb) {
-			// convenience function: Take two bytes forming a Hamming 16/8 pair 
+			// convenience function: Take two bytes forming a Hamming 16/8 pair
 			// and return the decoded pair as a byte.
             uint8_t out = 0;
 
@@ -104,5 +104,5 @@ namespace ttxParity {
             out |= deham_8_4(msb) << 4;
 
             return out;
-        } 
+        }
 };
