@@ -38,7 +38,7 @@ namespace config {
 		catch (std::invalid_argument) {
 			throw std::invalid_argument("User does not exist!");
 		}
-		
+
 		if (user_entry.first != password) {
 			throw std::invalid_argument("Incorrect password!");
 		}
@@ -69,7 +69,7 @@ namespace config {
 		BOOST_LOG_TRIVIAL(info) << "Loading configuration file '" << filespec << "'";
 		std::ifstream file(filespec, std::ios_base::in);
 		assert(file.is_open());
-		
+
 		for (std::string line; std::getline(file, line);) {
 			if (line[0] == '#') continue;
 			settings_list.insert(tokenize_line(line));
