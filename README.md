@@ -12,8 +12,7 @@ Teletext data server
     - Define template file format
     - Extend edit server protocol to update templates
 - Extensive(!!) refactoring
-    - Split ttxCarousel into a page database and the actual carousel 
-        so multiple sinks can have multiple independent page feeders
+    - Document source code
 
 # Requirements:
 
